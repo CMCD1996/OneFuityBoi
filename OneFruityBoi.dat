@@ -6,7 +6,7 @@
 # Date: 5/08/2018
 
 # Set up Supplier Informations
-# Avacodas, AV = Avocada, S# = Supply #
+# Avocados, AV = Avocado, S# = Supply #
 set AVOCADO_SUPPLIERS:= AVS1 AVS2 AVS3 AVS4;
 
 # Apples, AP = Apples, S# = Supply(Units/period)
@@ -16,7 +16,7 @@ set APPLE_SUPPLIERS:= APS1 APS2 APS3 APS4 APS5 APS6 APS7 APS8 APS9 APS10;
 set PERIODS: = 1 2 3 4 5 6 7 8 9 10;
 
 # Set up Market with Historical Demand
-# Avacodas, AV = Avocada, AP = Apple, D# = Demand #
+# Avocados, AV = Avocado, AP = Apple, D# = Demand #
 set AVOCADO_MARKET := AVD1 AVD2 AVD3 AVD4 AVD5;
 set APPLE_MARKET:= APD1 APD2 APD3 APD4 APD5 APD6 APD7 APD8 APD9 APD10
 						     APD11 APD12 APD13 APD14 APD15;
@@ -48,8 +48,8 @@ param apple_supply:=
 	APS10	14
 	;
 # Set up the demand parameters
-# Avacodo, all in demand unit in each period.
-param avacoda_demand:=
+# Avocado, all in demand unit in each period.
+param avocado_demand:=
 	1		2		3		4		5		6		7		8		9		10
 AVD1	6		1953		1976		262		1101		145		10		109		335		719
 AVD2	1609		12		58		131		407		1159		306		98		1240		224
@@ -77,7 +77,7 @@ APD15	155		249		93		66		29		76		2488		36		350		289
 ;
 
 # test case will delete later
-param simple_avacoda_demand:=
+param simple_avocado_demand:=
 AVD1	590
 AVD2	480
 AVD3	497
