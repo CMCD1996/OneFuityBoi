@@ -50,11 +50,11 @@ param apple_supply:=
 # Set up the demand parameters
 # Avacodo, all in demand unit in each period.
 param avacoda_demand:=
-		1		2		3		4		5		6		7		8		9		10
-AVD1	6		1953	1976	262		1101	145		10		109		335		719
-AVD2	1609	12		58		131		407		1159	306		98		1240	224
-AVD3	326		77		8		524		67		160		1665	106		58		1077
-AVD4	85		9		7		765		64		180		5		1439	70		20
+	1		2		3		4		5		6		7		8		9		10
+AVD1	6		1953		1976		262		1101		145		10		109		335		719
+AVD2	1609		12		58		131		407		1159		306		98		1240		224
+AVD3	326		77		8		524		67		160		1665		106		58		1077
+AVD4	85		9		7		765		64		180		5		1439		70		20
 AVD5	35		9		13		173		216		210		74		102		152		20
 ;
 param apple_demand:=
