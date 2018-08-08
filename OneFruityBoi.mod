@@ -30,7 +30,11 @@ param apple_from_supplier_cost{PACKHOUSE, APPLE_SUPPLIERS};
 
 # Check to make sure S =  Demand creating dummy supply and demand nodes and amoiunts when necessary
 
-var Build {} >=0, integer
+var NumberBuilt {PACKMACHINE, PACKHOUSE} >=0, integer
+
+# DEFINE FLOWS!1 
+
+# Objective Function
 
 # Constraints
 # Ensure that Demand is met
@@ -45,7 +49,7 @@ subject to UseSupply {i in AVOCADO_SUPPLIERS}:
 subject to ConserveFlow {i in PACKHOUSE}:
    sum {j in AVOCADO_SUPPLIERS} Flow[j,i]= sum {j in AVOCADO_MARKET} Flow[i,j];
 
-# Not exceed capacity at packhouse <-- THIS ONE NEEDS TO BE FIXED
-subject to Capacity {i in PACKHOUSE}:
-   sum {p in PACKMACHINE, }  Build[]*Capacity[p]>= sum {j in AVOCADO_MARKET} Flow[i, j];
+# Not exceed capacity at packhouse
+subject to CapacityOut {i in PACKHOUSE}:
+   sum {p in PACKMACHINE}  NumberBuilt[p, i]*average_pack_rate_for_machine[p]>= sum {j in AVOCADO_MARKET} Flow[i, j];
 
