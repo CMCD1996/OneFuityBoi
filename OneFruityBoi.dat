@@ -75,6 +75,16 @@ APD13	1570		12		97		336		655		5		16		14		104		304
 APD14	16		2846		60		77		30		2		14		52		100		80
 APD15	155		249		93		66		29		76		2488		36		350		289
 ;
+
+# test case will delete later
+param simple_avacoda_demand:=
+AVD1	590
+AVD2	480
+AVD3	497
+AVD4	429
+AVD5	64
+;
+
 # Packhouse parameters 
 # Pack Rate
 #(Units/period)
