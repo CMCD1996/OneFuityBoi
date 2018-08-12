@@ -3,3 +3,28 @@
 # Josh  Beckett
 # Alexander Zhao 
 # Optimisation Run File
+
+# Working out the transportation costs
+let {(i,j) in AVARCS} AVCost[i,j]
+	:= if (i in AVOCADO_SUPPLIERS)
+	then supplycost[i,j]
+	else if (j in AVOCADO_MARKET)
+	then marketcost[i,j];
+
+let {(i,j) in AVARCS} APCost[i,j]
+	:= if (i in APPLE_SUPPLIERS)
+	then supplycost[i,j]
+	else if (j in APPLE_MARKET)
+	then marketcost[i,j];
+	
+option solver gurobi;
+
+solve;
+
+display TotalCost;
+display AVFlow;
+display APFLow;
+display AVBuilt;
+display APBuilt;
+
+#AVBuilt and APBuilt should give you the number of things to install.
