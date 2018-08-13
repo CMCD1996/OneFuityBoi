@@ -4,27 +4,41 @@
 # Alexander Zhao 
 # Optimisation Run File
 
+###############################################################################################################################   
+# Reset and Load files
+############################################################################################################################### 
+reset;
+model OneFruityBoi.mod;
+data OneFruityBoi.dat;
+
+###############################################################################################################################   
+# Set the appropriate costs
+############################################################################################################################### 
 # Working out the transportation costs
 let {(i,j) in AVARCS} AVCost[i,j]
 	:= if (i in AVOCADO_SUPPLIERS)
 	then supplycost[i,j]
-	else if (j in AVOCADO_MARKET)
+	else if (j in AVOCADO_DEMAND)
 	then marketcost[i,j];
 
-let {(i,j) in AVARCS} APCost[i,j]
+let {(i,j) in APARCS} APCost[i,j]
 	:= if (i in APPLE_SUPPLIERS)
 	then supplycost[i,j]
-	else if (j in APPLE_MARKET)
+	else if (j in APPLE_DEMAND)
 	then marketcost[i,j];
-	
-option solver gurobi;
 
+
+###############################################################################################################################   
+# Solve the problem
+############################################################################################################################### 
+option solver gurobi;
 solve;
 
+###############################################################################################################################   
+# Display the outputs
+############################################################################################################################### 
 display TotalCost;
 display AVFlow;
-display APFLow;
+display APFlow;
 display AVBuilt;
 display APBuilt;
-
-#AVBuilt and APBuilt should give you the number of things to install.
