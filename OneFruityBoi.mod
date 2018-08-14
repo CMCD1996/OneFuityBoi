@@ -11,7 +11,6 @@ set AVOCADO_SUPPLIERS;
 set APPLE_SUPPLIERS;
 set AVOCADO_DEMAND;
 set APPLE_DEMAND;
-set PERIODS;
 set PACKMACHINE;
 set PACKHOUSE;
 
@@ -39,8 +38,8 @@ param APLower{AVARCS} >=0, default 0;
 param APUpper{(i,j) in APARCS} >= AVLower[i,j], default Infinity;
 
 # Set all the parameters for Supply and Demand
-param supply{SUPPLIERS,PERIODS};
-param demand{MARKETS,PERIODS};
+param supply{SUPPLIERS};
+param demand{MARKETS};
 param rate{PACKMACHINE};
 param packcost{PACKMACHINE};
 
@@ -50,15 +49,6 @@ param marketcost{PACKHOUSE, MARKETS};
 param AVCost{AVARCS} default 0;
 param APCost{APARCS} default 0;
 
-# Set the Net Demand Node flow, ALL to specify all periods.
-param AVNetDemand {n in AVNODES, p in PERIODS}
-	:= if n in AVOCADO_SUPPLIERS then -supply[n,'ALL'] else if n in AVOCADO_DEMAND
-	then demand[n,p];
-	
-# Set the Net Demand Node flow
-param APNetDemand {n in APNODES, p in PERIODS}
-	:= if n in APPLE_SUPPLIERS then -supply[n,'ALL'] else if n in APPLE_DEMAND
-	then demand[n,p];
 
 ###############################################################################################################################   
 # Set variables
