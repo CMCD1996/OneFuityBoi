@@ -15,18 +15,11 @@ data OneFruityBoi.dat;
 # Set the appropriate costs
 ############################################################################################################################### 
 # Working out the transportation costs
-let {(i,j) in AVARCS} AVCost[i,j]
-	:= if (i in AVOCADO_SUPPLIERS)
+let {(i,j) in ARCS} Cost[i,j]
+	:= if (i in SUPPLIERS)
 	then supplycost[i,j]
-	else if (j in AVOCADO_DEMAND)
+	else if (j in MARKETS)
 	then marketcost[i,j];
-
-let {(i,j) in APARCS} APCost[i,j]
-	:= if (i in APPLE_SUPPLIERS)
-	then supplycost[i,j]
-	else if (j in APPLE_DEMAND)
-	then marketcost[i,j];
-
 
 ###############################################################################################################################   
 # Solve the problem
@@ -38,7 +31,5 @@ solve;
 # Display the outputs
 ############################################################################################################################### 
 display TotalCost;
-display AVFlow;
-display APFlow;
-display AVBuilt;
-display APBuilt;
+display Built;
+display Flow;

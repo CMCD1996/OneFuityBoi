@@ -15,11 +15,13 @@ set AVOCADO_SUPPLIERS:= AVS1 AVS2 AVS3 AVS4;
 # Apples, AP = Apples, S# = Supply(Units/period)
 set APPLE_SUPPLIERS:= APS1 APS2 APS3 APS4 APS5 APS6 APS7 APS8 APS9 APS10;
 
+set TYPE:= AV AP;
+
 # Period sets
-set PERIODS:= 1 2 3 4 5 6 7 8 9 10 ALL;
+set PERIODS:= 1 2 3 4 5 6 7 8 9 10;
 
 # Set up Market with Historical Demand
-# Avocados, AV = Avocado, AP = Apple, D# = Demand
+# Avocados, AV = Avocado, AP = Apple, AD = Demand
 set AVOCADO_DEMAND:= AVD1 AVD2 AVD3 AVD4 AVD5;
 set APPLE_DEMAND:= APD1 APD2 APD3 APD4 APD5 APD6 APD7 APD8 APD9 APD10
 						     APD11 APD12 APD13 APD14 APD15;
@@ -35,8 +37,7 @@ set PACKHOUSE:= PH1 PH2 PH3 PH4;
 # Establish the parameters for the data files
 # Supply from each producer (Units/period)
 # Hack to work in periods
-param supply:
-			ALL:=
+param supply:=
 	AVS1	531
 	AVS2	285
 	AVS3	983
@@ -53,29 +54,29 @@ param supply:
 	APS10	14
 	;
 # Set up the demand parameters
-# Avocado, all in demand unit in each period.
+# Avocado and Apple demand, all in demand unit in each period.
 param demand:
-		1		2		3		4		5		6		7		8		9		10		ALL:=
-AVD1	6		1953	1976	262		1101	145		10		109		335		719		0
-AVD2	1609	12		58		131		407		1159	306		98		1240	224		0
-AVD3	326		77		8		524		67		160		1665	106		58		1077	0
-AVD4	85		9		7		765		64		180		5		1439	70		20		0
-AVD5	35		9		13		173		216		210		74		102		152		20		0
-APD1	173		12		1138	1854	116		4		26		868		141		180		0
-APD2	50		715		67		82		101		2		2		38		125		172		0
-APD3	114		12		233		71		52		5		1754	10		100		74		0
-APD4	17		32		884		120		32		5		3		10		431		93		0
-APD5	78		17		221		66		32		2		4		10		278		57		0
-APD6	209		12		524		66		72		3		2		49		1286	53		0
-APD7	21		42		146		225		29		2		2		36		100		2266	0
-APD8	1644	10		81		74		84		6		11		10		193		53		0
-APD9	32		11		111		254		131		2		6		14		306		97		0
-APD10	29		19		62		84		45		14		2		3178	104		89		0
-APD11	47		10		74		71		2475	4218	15		14		193		53		0
-APD12	195		351		121		467		32		2		4		11		100		55		0
-APD13	1570	12		97		336		655		5		16		14		104		304		0
-APD14	16		2846	60		77		30		2		14		52		100		80		0
-APD15	155		249		93		66		29		76		2488	36		350		289		0
+		1		2		3		4		5		6		7		8		9		10:=
+AVD1	6		1953	1976	262		1101	145		10		109		335		719		  
+AVD2	1609	12		58		131		407		1159	306		98		1240	224		
+AVD3	326		77		8		524		67		160		1665	106		58		1077	
+AVD4	85		9		7		765		64		180		5		1439	70		20		
+AVD5	35		9		13		173		216		210		74		102		152		20		
+APD1	173		12		1138	1854	116		4		26		868		141		180		
+APD2	50		715		67		82		101		2		2		38		125		172		
+APD3	114		12		233		71		52		5		1754	10		100		74		
+APD4	17		32		884		120		32		5		3		10		431		93		
+APD5	78		17		221		66		32		2		4		10		278		57		
+APD6	209		12		524		66		72		3		2		49		1286	53		
+APD7	21		42		146		225		29		2		2		36		100		2266	
+APD8	1644	10		81		74		84		6		11		10		193		53		
+APD9	32		11		111		254		131		2		6		14		306		97		
+APD10	29		19		62		84		45		14		2		3178	104		89		
+APD11	47		10		74		71		2475	4218	15		14		193		53		
+APD12	195		351		121		467		32		2		4		11		100		55		
+APD13	1570	12		97		336		655		5		16		14		104		304		
+APD14	16		2846	60		77		30		2		14		52		100		80		
+APD15	155		249		93		66		29		76		2488	36		350		289		
 ;
 
 # Packhouse parameters 
