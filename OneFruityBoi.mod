@@ -4,7 +4,9 @@
 # Alexander Zhao 619051233 azha755
 # Optimisation Model File
 
+###############################################################################################################################   
 # Set all the parameters
+###############################################################################################################################   
 set AVOCADO_SUPPLIERS;
 set APPLE_SUPPLIERS;
 set AVOCADO_DEMAND;
@@ -12,44 +14,102 @@ set APPLE_DEMAND;
 set PERIODS;
 set PACKMACHINE;
 set PACKHOUSE;
+set TYPE;
+
+# Create Total Supply and Demand Nodes
+set SUPPLIERS := AVOCADO_SUPPLIERS union APPLE_SUPPLIERS;
+set MARKETS := AVOCADO_DEMAND union APPLE_DEMAND;
+
+# Create a complete set of nodes (Remove later as do not use)
+set NODES:= SUPPLIERS union MARKETS union PACKHOUSE;
+
+# Create a large set of ARCS
+set ARCS := (SUPPLIERS cross PACKHOUSE) union (PACKHOUSE cross MARKETS);
+
+###############################################################################################################################   
+# Set parameters
+###############################################################################################################################   
+# Set the lower and upper bounds for all arcs
+param Lower{ARCS} >=0, default 0;
+param Upper{(i,j) in ARCS} >= Lower[i,j], default Infinity;
 
 # Set all the parameters for Supply and Demand
-param avocado_supply{AVOCADO_SUPPLIERS};
-param apple_supply{APPLE_SUPPLIERS};
-param avocado_demand{AVOCADO_MARKET,PERIODS};
-param apple_demand{APPLE_MARKET,PERIODS};
-param average_pack_rate_for_machine{PACKMACHINE};
-param packing_machine_cost{PACKMACHINE};
+param supply{SUPPLIERS};
+param demand{MARKETS,PERIODS};
+param rate{PACKMACHINE};
+param packcost{PACKMACHINE};
 
-# temp for a simplified model
-param simple_avocado_demand {AVOCADO_MARKET};
+# Do the cost tables and costs flows
+param supplycost{SUPPLIERS,PACKHOUSE};
+param marketcost{PACKHOUSE, MARKETS};
+param Cost{ARCS} default 0;
 
-# Do all the tables
-param avocado_from_supplier_cost{AVOCADO_SUPPLIERS,PACKHOUSE};
-param apple_from_supplier_cost{PACKHOUSE, APPLE_SUPPLIERS};
+# Set the Net Demand Node flow, ALL to specify all periods.
+param NetDemand {n in NODES, p in PERIODS}
+	:= if n in SUPPLIERS then -supply[n] else if n in MARKETS
+	then demand[n,p];
+	
+###############################################################################################################################   
+# Set variables
+###############################################################################################################################   
+# Create variables
+# Four Dimensional System
+var Flow {(i,j) in ARCS, t in TYPE, p in PERIODS} >= 0, integer;
 
-# Check to make sure S =  Demand creating dummy supply and demand nodes and amoiunts when necessary
+# Variable to control the number of machines to build.
+var Built {PACKMACHINE, PACKHOUSE, TYPE} >=0, integer;
 
-var NumberBuilt {PACKMACHINE, PACKHOUSE} >=0, integer
-
-# DEFINE FLOWS!1 
-
+###############################################################################################################################   
 # Objective Function
-
-# Constraints
-# Ensure that Demand is met
-subject to MeetDemand {j in AVOCADO_MARKET}:
-  sum {i in PACKHOUSE} Flow[i, j] >= simple_avocado_demand[j]
-
+###############################################################################################################################   
+minimize TotalCost: sum{(i,j) in ARCS, t in TYPE, p in PERIODS} Cost[i,j]*Flow[i,j,t,p]
+					+ sum{m in PACKMACHINE, h in PACKHOUSE, t in TYPE} packcost[m]*Built[m,h,t];
+          
+###############################################################################################################################   				
+# Constraints (Try Splitting Up Contraints)
+###############################################################################################################################   
+# Ensure the Demand is met, meeting demand exactly
+# Avocados
+subject to AVMeetDemand {j in AVOCADO_DEMAND, t in TYPE, p in PERIODS}:
+  sum {i in PACKHOUSE} Flow[i, j, 'AV', p] >= demand[j,p];
+  
 # Ensure that supply is not breached
-subject to UseSupply {i in AVOCADO_SUPPLIERS}:
-  sum {j in PACKHOUSE} Flow[i, j] <= avocado_supply[i]
+subject to AVUseSupply {i in AVOCADO_SUPPLIERS, t in TYPE, p in PERIODS}:
+  sum {j in PACKHOUSE} Flow[i ,j ,'AV' ,p] <= supply[i];
 
-# Must conserve flow at the packhouses
-subject to ConserveFlow {i in PACKHOUSE}:
-   sum {j in AVOCADO_SUPPLIERS} Flow[j,i]= sum {j in AVOCADO_MARKET} Flow[i,j];
+# Equal flow constraint
+subject to AVConserveFlow {j in PACKHOUSE, t in TYPE, p in PERIODS}:
+   sum {i in AVOCADO_SUPPLIERS} Flow[i, j, 'AV', p] = sum{i in AVOCADO_DEMAND} Flow[j, i, 'AV', p];
 
-# Not exceed capacity at packhouse
-subject to CapacityOut {i in PACKHOUSE}:
-   sum {p in PACKMACHINE}  NumberBuilt[p, i]*average_pack_rate_for_machine[p]>= sum {j in AVOCADO_MARKET} Flow[i, j];
+# Not exceed capacity at packhouse for each period
+subject to AVCapacityOut {h in PACKHOUSE, t in TYPE, p in PERIODS}:
+   sum {m in PACKMACHINE} Built[m, h, 'AV']*rate[m] >= sum {j in AVOCADO_SUPPLIERS} Flow[j, h, 'AV', p];
 
+# APPLES
+subject to APMeetDemand {j in APPLE_DEMAND, t in TYPE, p in PERIODS}:
+  sum {i in PACKHOUSE} Flow[i, j, 'AP', p] >= demand[j,p];
+  
+# Ensure that supply is not breached
+subject to APUseSupply {i in APPLE_SUPPLIERS, t in TYPE, p in PERIODS}:
+  sum {j in PACKHOUSE} Flow[i ,j ,'AP' ,p] <= supply[i];
+
+# Equal flow constraint
+subject to APConserveFlow {j in PACKHOUSE, t in TYPE, p in PERIODS}:
+   sum {i in APPLE_SUPPLIERS} Flow[i, j, 'AP', p] = sum{i in APPLE_DEMAND} Flow[j, i, 'AP', p];
+
+# Not exceed capacity at packhouse for each period
+subject to APCapacityOut {h in PACKHOUSE, t in TYPE, p in PERIODS}:
+   sum {m in PACKMACHINE} Built[m, h, 'AP']*rate[m] >= sum {j in APPLE_SUPPLIERS} Flow[j, h, 'AP', p];
+###############################################################################################################################   
+# Model summary notes.
+###############################################################################################################################   
+# Splitting the model into Avocado and Apple Flows so the machine is useful
+# Splitting the machines up to tell the packhouses how many of each machine to configure.
+# The trick is, this is two seperate problems, avocado and apples. We want to place the packing machines in wharehouses
+# that minimise the cost. Since packing machines can't be used for both apples and avocados, they are mutually exclusive.
+# You can formulate into one massive problem, flicking between the avocados and apples, through all the periods.
+# Don't need to take all the supply, we buy from the suppliers and incur transporation costs. We want to minimise our wastage.
+# We have have contracts to buy from the suppliers.
+# We might need to do a dummy demand so the problem is naturally integer.
+# Model Assumption: We have a contract rate with the suppliers. We are not obligued to take all of the supply. We are not
+# we are not obligued to take all of the supply, some is left over.
