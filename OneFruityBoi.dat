@@ -34,9 +34,11 @@ set PACKHOUSE:= PH1 PH2 PH3 PH4;
 # Parameters
 ############################################################################################################################### 
 
+# Number of Periods parameters for installing the size
+param numPeriods := 10;
+
 # Establish the parameters for the data files
 # Supply from each producer (Units/period)
-# Hack to work in periods
 param supply:=
 	AVS1	531
 	AVS2	285

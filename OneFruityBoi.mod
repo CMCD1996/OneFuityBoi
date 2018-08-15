@@ -44,11 +44,8 @@ param supplycost{SUPPLIERS,PACKHOUSE};
 param marketcost{PACKHOUSE, MARKETS};
 param Cost{ARCS} default 0;
 
-# Set the Net Demand Node flow, ALL to specify all periods.
-param NetDemand {n in NODES, p in PERIODS}
-	:= if n in SUPPLIERS then -supply[n] else if n in MARKETS
-	then demand[n,p];
-	
+param numPeriods;
+
 ###############################################################################################################################   
 # Set variables
 ###############################################################################################################################   
@@ -63,10 +60,10 @@ var Built {PACKMACHINE, PACKHOUSE, TYPE} >=0, integer;
 # Objective Function
 ###############################################################################################################################   
 minimize TotalCost: sum{(i,j) in ARCS, t in TYPE, p in PERIODS} Cost[i,j]*Flow[i,j,t,p]
-					+ sum{m in PACKMACHINE, h in PACKHOUSE, t in TYPE} packcost[m]*Built[m,h,t];
+					+ sum{m in PACKMACHINE, h in PACKHOUSE, t in TYPE} numPeriods*packcost[m]*Built[m,h,t];
           
 ###############################################################################################################################   				
-# Constraints (Try Splitting Up Contraints)
+# Constraints
 ###############################################################################################################################   
 # Ensure the Demand is met, meeting demand exactly
 # Avocados
