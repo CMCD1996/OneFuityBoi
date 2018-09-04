@@ -35,6 +35,7 @@ param supplycost{SUPPLIERS,PACKHOUSE};
 param marketcost{PACKHOUSE, MARKETS};
 param Cost{ARCS} default 0;
 
+# Set up the Number of Periods
 param numPeriods;
 
 ###############################################################################################################################   
